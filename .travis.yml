@@ -1,6 +1,6 @@
+os: linux
 dist: xenial
 language: java
-sudo: false
 jdk: openjdk17
 install: true
 addons:
