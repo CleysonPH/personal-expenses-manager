@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.treinaweb.personalexpensesmanager.api.v1.dtos.requests.AccountRequest;
 import br.com.treinaweb.personalexpensesmanager.api.v1.dtos.responses.AccountResponse;
@@ -81,10 +82,14 @@ class AccountControllerImplTest {
     void whenGETFindByIdWithInvalidIdThenStatusCode404ShouldBeReturned() throws Exception {
         var accountId = 1L;
 
-        when(accountService.findById(accountId)).thenThrow(AccountNotFoundException.class);
+        when(accountService.findById(accountId)).thenThrow(new AccountNotFoundException());
 
         mockMvc.perform(get(AccountRoutes.FIND_BY_ID_URI, accountId))
-            .andExpect(status().isNotFound());
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.status", is(404)))
+            .andExpect(jsonPath("$.error", is("Not Found")))
+            .andExpect(jsonPath("$.message", is("Account not found")))
+            .andExpect(jsonPath("$.path", is(UriComponentsBuilder.fromUriString(AccountRoutes.FIND_BY_ID_URI).build(accountId).toString())));
     }
 
     @Test
@@ -109,10 +114,14 @@ class AccountControllerImplTest {
     void whenDELETEDeleteByIdWithInvalidIdIsCalledThenStatusCode404ShouldBeReturned() throws Exception {
         var accountId = 1L;
 
-        doThrow(AccountNotFoundException.class).when(accountService).deleteById(accountId);
+        doThrow(new AccountNotFoundException()).when(accountService).deleteById(accountId);
 
         mockMvc.perform(delete(AccountRoutes.DELETE_BY_ID_URI, accountId))
-            .andExpect(status().isNotFound());
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.status", is(404)))
+            .andExpect(jsonPath("$.error", is("Not Found")))
+            .andExpect(jsonPath("$.message", is("Account not found")))
+            .andExpect(jsonPath("$.path", is(UriComponentsBuilder.fromUriString(AccountRoutes.DELETE_BY_ID_URI).build(accountId).toString())));
     }
 
     @Test
@@ -134,10 +143,14 @@ class AccountControllerImplTest {
             .build();
         var requestJson = objectMapper.writeValueAsString(accountRequest);
 
-        when(accountService.updateById(accountRequest, accountId)).thenThrow(AccountNotFoundException.class);
+        when(accountService.updateById(accountRequest, accountId)).thenThrow(new AccountNotFoundException());
 
         mockMvc.perform(put(AccountRoutes.UPDATE_BY_ID_URI, accountId).contentType(MediaType.APPLICATION_JSON).content(requestJson))
-            .andExpect(status().isNotFound());
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.status", is(404)))
+            .andExpect(jsonPath("$.error", is("Not Found")))
+            .andExpect(jsonPath("$.message", is("Account not found")))
+            .andExpect(jsonPath("$.path", is(UriComponentsBuilder.fromUriString(AccountRoutes.UPDATE_BY_ID_URI).build(accountId).toString())));
     }
 
     @Test
