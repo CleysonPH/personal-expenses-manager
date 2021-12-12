@@ -1,8 +1,5 @@
 package br.com.treinaweb.personalexpensesmanager.api.v1.dtos.responses;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,13 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ErrorResponse {
+public class FieldErrorResponse {
 
-    private Integer status;
+    private String field;
     private String error;
-    private String message;
-    private String path;
-    private LocalDateTime timestamp;
-    private List<FieldErrorResponse> validationErrors;
 
 }
