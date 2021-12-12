@@ -18,7 +18,7 @@ import br.com.treinaweb.personalexpensesmanager.core.models.Account;
 import br.com.treinaweb.personalexpensesmanager.core.repositories.AccountRepository;
 
 @ExtendWith(MockitoExtension.class)
-public class AccountServiceImplTest {
+class AccountServiceImplTest {
 
     @Mock
     private AccountRepository accountRepository;
