@@ -158,4 +158,53 @@ class AccountServiceImplTest {
         verify(accountRepository, times(1)).delete(account);
     }
 
+    @Test
+    void whenUpdateByIdWithValidIdAndValidDataThenIsShouldBeReturned() {
+        var accountId = 1L;
+        var request = AccountRequest.builder()
+            .name("Nubank Edited")
+            .description("Nubank account edited")
+            .build();
+        var accountToUpdate = Account.builder()
+            .id(accountId)
+            .name("Nubank")
+            .description("Nubank account edited")
+            .build();
+        var updatedAccount = Account.builder()
+            .id(accountId)
+            .name("Nubank edited")
+            .description("Nubank account edited")
+            .build();
+        var expectedResponse = AccountResponse.builder()
+            .id(accountId)
+            .name("Nubank edited")
+            .description("Nubank account edited")
+            .build();
+
+        when(accountRepository.findById(accountId)).thenReturn(Optional.of(accountToUpdate));
+        when(accountRepository.save(accountToUpdate)).thenReturn(updatedAccount);
+        when(accountMapper.toResponse(updatedAccount)).thenReturn(expectedResponse);
+
+        var returnedResponse = accountService.updateById(request, accountId);
+
+        assertThat(returnedResponse.getId(), is(equalTo(expectedResponse.getId())));
+        assertThat(returnedResponse.getName(), is(equalTo(expectedResponse.getName())));
+        assertThat(returnedResponse.getDescription(), is(equalTo(expectedResponse.getDescription())));
+    }
+
+    @Test
+    void whenUpdateByIdIsCalledWithInvalidIdThenAccountNotFoundExceptionShouldBeThrow() {
+        var accountId = 1L;
+        var request = AccountRequest.builder()
+            .name("Nubank Edited")
+            .description("Nubank account edited")
+            .build();
+        var expectedMessage = "Account with id 1 not found";
+
+        when(accountRepository.findById(accountId)).thenReturn(Optional.<Account>empty());
+
+        var exception = assertThrows(AccountNotFoundException.class, () -> accountService.updateById(request, accountId));
+        assertThat(exception.getMessage(), is(equalTo(expectedMessage)));
+    }
+
 }
