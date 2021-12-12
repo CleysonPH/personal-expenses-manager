@@ -2,6 +2,8 @@ package br.com.treinaweb.personalexpensesmanager.api.v1.controllers;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,7 +32,7 @@ public class AccountControllerImpl implements AccountController {
     @Override
     @PostMapping(AccountRoutes.CREATE_URI)
     @ResponseStatus(code = HttpStatus.CREATED)
-    public AccountResponse create(@RequestBody AccountRequest request) {
+    public AccountResponse create(@RequestBody @Valid AccountRequest request) {
         return accountService.create(request);
     }
 
@@ -56,7 +58,7 @@ public class AccountControllerImpl implements AccountController {
     @Override
     @PutMapping(AccountRoutes.UPDATE_BY_ID_URI)
     public AccountResponse updateById(
-        @RequestBody AccountRequest request, @PathVariable Long accountId
+        @RequestBody @Valid AccountRequest request, @PathVariable Long accountId
     ) {
         return accountService.updateById(request, accountId);
     }
