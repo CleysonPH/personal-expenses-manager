@@ -5,6 +5,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.Test;
@@ -51,6 +53,25 @@ class AccountControllerImplTest {
             .andExpect(jsonPath("$.id", is(expectedResponse.getId().intValue())))
             .andExpect(jsonPath("$.name", is(expectedResponse.getName())))
             .andExpect(jsonPath("$.description", is(expectedResponse.getDescription())));
+    }
+
+    @Test
+    void whenGETFindAllThenShouldReturnAllAccountsWithStatusCode200() throws Exception {
+        var accountResponse = AccountResponse.builder()
+            .id(1L)
+            .name("Nubank")
+            .description("Nubank account")
+            .build();
+        var accountsResponseToReturn = List.of(accountResponse);
+
+        when(accountService.findAll()).thenReturn(accountsResponseToReturn);
+
+        mockMvc.perform(get(AccountRoutes.FIND_ALL_URI))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.length()", is(accountsResponseToReturn.size())))
+            .andExpect(jsonPath("$.[0].id", is(accountsResponseToReturn.get(0).getId().intValue())))
+            .andExpect(jsonPath("$.[0].name", is(accountsResponseToReturn.get(0).getName())))
+            .andExpect(jsonPath("$.[0].description", is(accountsResponseToReturn.get(0).getDescription())));
     }
 
 }
