@@ -11,4 +11,6 @@ public interface AccountController {
 
     List<AccountResponse> findAll();
 
+    AccountResponse findById(Long accountId);
+
 }

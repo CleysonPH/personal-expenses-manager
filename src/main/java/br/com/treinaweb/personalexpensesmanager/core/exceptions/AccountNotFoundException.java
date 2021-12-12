@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(code = HttpStatus.NOT_FOUND)
 public class AccountNotFoundException extends EntityNotFoundException {
 
-    public AccountNotFoundException() {}
+    public AccountNotFoundException() {
+        super("Account not found");
+    }
 
     public AccountNotFoundException(String message) {
         super(message);
