@@ -78,13 +78,11 @@ class AccountControllerImplTest {
     @Test
     void whenGETFindByIdWithInvalidIdThenStatusCode404ShouldBeReturned() throws Exception {
         var accountId = 1L;
-        var expectedMessage = "Account not found";
 
         when(accountService.findById(accountId)).thenThrow(AccountNotFoundException.class);
 
         mockMvc.perform(get(AccountRoutes.FIND_BY_ID_URI, accountId))
-            .andExpect(status().isNotFound())
-            .andExpect(jsonPath("$.message", is(expectedMessage)));
+            .andExpect(status().isNotFound());
     }
 
     @Test
