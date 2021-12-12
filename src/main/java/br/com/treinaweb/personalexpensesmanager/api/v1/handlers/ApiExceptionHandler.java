@@ -30,7 +30,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             .timestamp(LocalDateTime.now())
             .build();
 
-        return new ResponseEntity<ErrorResponse>(errorResponse, status);
+        return new ResponseEntity<>(errorResponse, status);
     }
 
 }
