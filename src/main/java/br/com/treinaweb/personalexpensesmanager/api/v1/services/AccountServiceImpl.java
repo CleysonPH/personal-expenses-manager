@@ -2,6 +2,7 @@ package br.com.treinaweb.personalexpensesmanager.api.v1.services;
 
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import br.com.treinaweb.personalexpensesmanager.api.v1.dtos.requests.AccountRequest;
@@ -47,6 +48,14 @@ public class AccountServiceImpl implements AccountService {
     public void deleteById(Long accountId) {
         var foundAccount = findAccountById(accountId);
         accountRepository.delete(foundAccount);
+    }
+
+    @Override
+    public AccountResponse updateById(AccountRequest request, Long accountId) {
+        var accountToUpdate = findAccountById(accountId);
+        BeanUtils.copyProperties(request, accountToUpdate);
+        var updatedAccount = accountRepository.save(accountToUpdate);
+        return accountMapper.toResponse(updatedAccount);
     }
 
     private Account findAccountById(Long accountId) {
