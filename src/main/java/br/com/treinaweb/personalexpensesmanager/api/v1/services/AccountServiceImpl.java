@@ -1,5 +1,7 @@
 package br.com.treinaweb.personalexpensesmanager.api.v1.services;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import br.com.treinaweb.personalexpensesmanager.api.v1.dtos.requests.AccountRequest;
@@ -23,6 +25,14 @@ public class AccountServiceImpl implements AccountService {
         var accountToCreate = accountMapper.toModel(request);
         var createdAccount = accountRepository.save(accountToCreate);
         return accountMapper.toResponse(createdAccount);
+    }
+
+    @Override
+    public List<AccountResponse> findAll() {
+        return accountRepository.findAll()
+            .stream()
+            .map(accountMapper::toResponse)
+            .toList();
     }
 
 }

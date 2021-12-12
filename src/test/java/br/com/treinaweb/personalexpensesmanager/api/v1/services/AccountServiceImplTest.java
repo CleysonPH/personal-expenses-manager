@@ -5,6 +5,8 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -63,6 +65,30 @@ class AccountServiceImplTest {
         assertThat(returnedResponse.getId(), is(equalTo(expectedResponse.getId())));
         assertThat(returnedResponse.getName(), is(equalTo(expectedResponse.getName())));
         assertThat(returnedResponse.getDescription(), is(equalTo(expectedResponse.getDescription())));
+    }
+
+    @Test
+    void whenFindAllIsCalledThenShouldReturnAllAccounts() {
+        var account = Account.builder()
+            .id(1L)
+            .name("Nubank")
+            .description("Nubank account")
+            .build();
+        var accountResponse = AccountResponse.builder()
+            .id(1L)
+            .name("Nubank")
+            .description("Nubank account")
+            .build();
+        var accounts = List.of(account);
+        var expectedAccountsResponse = List.of(accountResponse);
+
+        when(accountRepository.findAll()).thenReturn(accounts);
+        when(accountMapper.toResponse(account)).thenReturn(accountResponse);
+
+        var returnedAccountsResponse = accountService.findAll();
+
+        assertThat(returnedAccountsResponse.size(), is(equalTo(expectedAccountsResponse.size())));
+        assertThat(returnedAccountsResponse.get(0), is(equalTo(expectedAccountsResponse.get(0))));
     }
 
 }

@@ -6,5 +6,6 @@ public class AccountRoutes {
 
     public static final String BASE_URI = BaseRoutes.BASE_URI + "/accounts";
     public static final String CREATE_URI = BASE_URI;
+    public static final String FIND_ALL_URI = BASE_URI;
 
 }
