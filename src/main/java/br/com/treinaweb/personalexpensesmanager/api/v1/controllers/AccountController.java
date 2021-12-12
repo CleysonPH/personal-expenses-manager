@@ -24,6 +24,10 @@ public interface AccountController {
     })
     AccountResponse create(AccountRequest request);
 
+    @ApiOperation("Lista todas as contas")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Listagem realizada com sucesso")
+    })
     List<AccountResponse> findAll();
 
     AccountResponse findById(Long accountId);
