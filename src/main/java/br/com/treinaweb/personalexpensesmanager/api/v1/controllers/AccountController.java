@@ -37,6 +37,11 @@ public interface AccountController {
     })
     AccountResponse findById(Long accountId);
 
+    @ApiOperation("Excluir conta por id")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Conta encontrada com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Conta não encontrada", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
     ResponseEntity<Void> deleteById(Long accountId);
 
     AccountResponse updateById(AccountRequest request, Long accountId);
