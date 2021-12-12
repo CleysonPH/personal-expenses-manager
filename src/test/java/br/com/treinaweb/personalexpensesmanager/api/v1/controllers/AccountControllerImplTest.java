@@ -20,7 +20,7 @@ import br.com.treinaweb.personalexpensesmanager.api.v1.routes.AccountRoutes;
 import br.com.treinaweb.personalexpensesmanager.api.v1.services.AccountService;
 
 @WebMvcTest(AccountControllerImpl.class)
-public class AccountControllerImplTest {
+class AccountControllerImplTest {
 
     @MockBean
     private AccountService accountService;

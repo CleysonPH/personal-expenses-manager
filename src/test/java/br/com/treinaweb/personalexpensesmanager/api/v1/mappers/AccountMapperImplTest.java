@@ -11,7 +11,7 @@ import br.com.treinaweb.personalexpensesmanager.api.v1.dtos.requests.AccountRequ
 import br.com.treinaweb.personalexpensesmanager.api.v1.dtos.responses.AccountResponse;
 import br.com.treinaweb.personalexpensesmanager.core.models.Account;
 
-public class AccountMapperImplTest {
+class AccountMapperImplTest {
 
     private AccountMapper accountMapper;
 
