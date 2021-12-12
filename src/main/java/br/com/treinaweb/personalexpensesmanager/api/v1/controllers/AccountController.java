@@ -30,6 +30,11 @@ public interface AccountController {
     })
     List<AccountResponse> findAll();
 
+    @ApiOperation("Busca conta por id")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Conta encontrada com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Conta não encontrada", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
     AccountResponse findById(Long accountId);
 
     ResponseEntity<Void> deleteById(Long accountId);
