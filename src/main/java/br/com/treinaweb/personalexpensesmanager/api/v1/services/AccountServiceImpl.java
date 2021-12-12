@@ -43,6 +43,12 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.toResponse(foundAccount);
     }
 
+    @Override
+    public void deleteById(Long accountId) {
+        var foundAccount = findAccountById(accountId);
+        accountRepository.delete(foundAccount);
+    }
+
     private Account findAccountById(Long accountId) {
         var message = String.format("Account with id %d not found", accountId);
         return accountRepository.findById(accountId)
