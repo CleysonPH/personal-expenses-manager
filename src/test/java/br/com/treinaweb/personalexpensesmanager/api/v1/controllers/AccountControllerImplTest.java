@@ -125,4 +125,42 @@ class AccountControllerImplTest {
             .andExpect(status().isNoContent());
     }
 
+    @Test
+    void whenPUTUpdateByIdWithInvalidIdIsCalledThenStatusCode4040ShouldBeReturned() throws Exception {
+        var accountId = 1L;
+        var accountRequest = AccountRequest.builder()
+            .name("Nubank edited")
+            .description("Nubank account edited")
+            .build();
+        var requestJson = objectMapper.writeValueAsString(accountRequest);
+
+        when(accountService.updateById(accountRequest, accountId)).thenThrow(AccountNotFoundException.class);
+
+        mockMvc.perform(put(AccountRoutes.UPDATE_BY_ID_URI, accountId).contentType(MediaType.APPLICATION_JSON).content(requestJson))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void whenPUTUpdateByIdWithValidIdAndValidDataThenAccountResponseShouldBeReturnedWithStatusCode200() throws Exception {
+        var accountId = 1L;
+        var accountRequest = AccountRequest.builder()
+            .name("Nubank edited")
+            .description("Nubank account edited")
+            .build();
+        var expectedAccountResponse = AccountResponse.builder()
+            .id(accountId)
+            .name("Nubank edited")
+            .description("Nubank account edited")
+            .build();
+        var requestJson = objectMapper.writeValueAsString(accountRequest);
+
+        when(accountService.updateById(accountRequest, accountId)).thenReturn(expectedAccountResponse);
+
+        mockMvc.perform(put(AccountRoutes.UPDATE_BY_ID_URI, accountId).contentType(MediaType.APPLICATION_JSON).content(requestJson))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id", is(expectedAccountResponse.getId().intValue())))
+            .andExpect(jsonPath("$.name", is(expectedAccountResponse.getName())))
+            .andExpect(jsonPath("$.description", is(expectedAccountResponse.getDescription())));
+    }
+
 }

@@ -17,4 +17,6 @@ public interface AccountController {
 
     ResponseEntity<Void> deleteById(Long accountId);
 
+    AccountResponse updateById(AccountRequest request, Long accountId);
+
 }
