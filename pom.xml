@@ -90,6 +90,7 @@
 					src/main/java/**/models/**,
 					src/main/java/**/repositories/**,
 					src/main/java/**/routes/**,
+					src/main/java/**/exceptions/**,
 					src/test/java/**
 				</sonar.exclusions>
 			</properties>

@@ -20,6 +20,7 @@ import br.com.treinaweb.personalexpensesmanager.api.v1.dtos.requests.AccountRequ
 import br.com.treinaweb.personalexpensesmanager.api.v1.dtos.responses.AccountResponse;
 import br.com.treinaweb.personalexpensesmanager.api.v1.routes.AccountRoutes;
 import br.com.treinaweb.personalexpensesmanager.api.v1.services.AccountService;
+import br.com.treinaweb.personalexpensesmanager.core.exceptions.AccountNotFoundException;
 
 @WebMvcTest(AccountControllerImpl.class)
 class AccountControllerImplTest {
@@ -72,6 +73,34 @@ class AccountControllerImplTest {
             .andExpect(jsonPath("$.[0].id", is(accountsResponseToReturn.get(0).getId().intValue())))
             .andExpect(jsonPath("$.[0].name", is(accountsResponseToReturn.get(0).getName())))
             .andExpect(jsonPath("$.[0].description", is(accountsResponseToReturn.get(0).getDescription())));
+    }
+
+    @Test
+    void whenGETFindByIdWithInvalidIdThenStatusCode404ShouldBeReturned() throws Exception {
+        var accountId = 1L;
+
+        when(accountService.findById(accountId)).thenThrow(AccountNotFoundException.class);
+
+        mockMvc.perform(get(AccountRoutes.FIND_BY_ID_URI, accountId))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void whenGETFindByIdWithValidIdThenReturnAccountResponseWithStatusCode200() throws Exception {
+        var accountId = 1L;
+        var expectedAccountResponse = AccountResponse.builder()
+            .id(accountId)
+            .name("Nubank")
+            .description("Nubank account")
+            .build();
+
+        when(accountService.findById(accountId)).thenReturn(expectedAccountResponse);
+
+        mockMvc.perform(get(AccountRoutes.FIND_BY_ID_URI, accountId))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id", is(expectedAccountResponse.getId().intValue())))
+            .andExpect(jsonPath("$.name", is(expectedAccountResponse.getName())))
+            .andExpect(jsonPath("$.description", is(expectedAccountResponse.getDescription())));
     }
 
 }

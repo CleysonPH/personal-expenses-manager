@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import br.com.treinaweb.personalexpensesmanager.api.v1.dtos.requests.AccountRequest;
 import br.com.treinaweb.personalexpensesmanager.api.v1.dtos.responses.AccountResponse;
 import br.com.treinaweb.personalexpensesmanager.api.v1.mappers.AccountMapper;
+import br.com.treinaweb.personalexpensesmanager.core.exceptions.AccountNotFoundException;
+import br.com.treinaweb.personalexpensesmanager.core.models.Account;
 import br.com.treinaweb.personalexpensesmanager.core.repositories.AccountRepository;
 
 @Service
@@ -33,6 +35,18 @@ public class AccountServiceImpl implements AccountService {
             .stream()
             .map(accountMapper::toResponse)
             .toList();
+    }
+
+    @Override
+    public AccountResponse findById(Long accountId) {
+        var foundAccount = findAccountById(accountId);
+        return accountMapper.toResponse(foundAccount);
+    }
+
+    private Account findAccountById(Long accountId) {
+        var message = String.format("Account with id %d not found", accountId);
+        return accountRepository.findById(accountId)
+            .orElseThrow(() -> new AccountNotFoundException(message));
     }
 
 }
