@@ -4,6 +4,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -127,6 +129,33 @@ class AccountServiceImplTest {
         assertThat(returnedAccountResponse.getId(), is(equalTo(expectedAccountsResponse.getId())));
         assertThat(returnedAccountResponse.getName(), is(equalTo(expectedAccountsResponse.getName())));
         assertThat(returnedAccountResponse.getDescription(), is(equalTo(expectedAccountsResponse.getDescription())));
+    }
+
+    @Test
+    void whenDeleteByIdIsCalledWithInvalidIdThenAccountNotFoundExceptionShouldBeThrow() {
+        var accountId = 1L;
+        var expectedMessage = "Account with id 1 not found";
+
+        when(accountRepository.findById(accountId)).thenReturn(Optional.<Account>empty());
+
+        var exception = assertThrows(AccountNotFoundException.class, () -> accountService.deleteById(accountId));
+        assertThat(exception.getMessage(), is(equalTo(expectedMessage)));
+    }
+
+    @Test
+    void whenDeleteByIdIsCalledWithValidIdThenAccountRepositoryDeleteMethodShouldBeCalled() {
+        var accountId = 1L;
+        var account = Account.builder()
+            .id(accountId)
+            .name("Nubank")
+            .description("Nubank account")
+            .build();
+
+        when(accountRepository.findById(accountId)).thenReturn(Optional.of(account));
+
+        accountService.deleteById(accountId);
+
+        verify(accountRepository, times(1)).delete(account);
     }
 
 }

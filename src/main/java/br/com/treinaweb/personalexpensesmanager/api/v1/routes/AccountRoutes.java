@@ -8,5 +8,6 @@ public class AccountRoutes {
     public static final String CREATE_URI = BASE_URI;
     public static final String FIND_ALL_URI = BASE_URI;
     public static final String FIND_BY_ID_URI = BASE_URI + "/{accountId}";
+    public static final String DELETE_BY_ID_URI = FIND_BY_ID_URI;
 
 }

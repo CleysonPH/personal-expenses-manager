@@ -1,6 +1,8 @@
 package br.com.treinaweb.personalexpensesmanager.api.v1.controllers;
 
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -101,6 +103,26 @@ class AccountControllerImplTest {
             .andExpect(jsonPath("$.id", is(expectedAccountResponse.getId().intValue())))
             .andExpect(jsonPath("$.name", is(expectedAccountResponse.getName())))
             .andExpect(jsonPath("$.description", is(expectedAccountResponse.getDescription())));
+    }
+
+    @Test
+    void whenDELETEDeleteByIdWithInvalidIdIsCalledThenStatusCode404ShouldBeReturned() throws Exception {
+        var accountId = 1L;
+
+        doThrow(AccountNotFoundException.class).when(accountService).deleteById(accountId);
+
+        mockMvc.perform(delete(AccountRoutes.DELETE_BY_ID_URI, accountId))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void whenDELETEDeleteByIdWithValidIdIsCalledThenStatusCode204ShouldBeReturned() throws Exception {
+        var accountId = 1L;
+
+        doNothing().when(accountService).deleteById(accountId);
+
+        mockMvc.perform(delete(AccountRoutes.DELETE_BY_ID_URI, accountId))
+            .andExpect(status().isNoContent());
     }
 
 }
