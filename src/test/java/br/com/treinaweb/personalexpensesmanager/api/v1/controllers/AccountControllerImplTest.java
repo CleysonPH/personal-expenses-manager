@@ -126,7 +126,7 @@ class AccountControllerImplTest {
     }
 
     @Test
-    void whenPUTUpdateByIdWithInvalidIdIsCalledThenStatusCode4040ShouldBeReturned() throws Exception {
+    void whenPUTUpdateByIdWithInvalidIdIsCalledThenStatusCode404ShouldBeReturned() throws Exception {
         var accountId = 1L;
         var accountRequest = AccountRequest.builder()
             .name("Nubank edited")
@@ -161,6 +161,91 @@ class AccountControllerImplTest {
             .andExpect(jsonPath("$.id", is(expectedAccountResponse.getId().intValue())))
             .andExpect(jsonPath("$.name", is(expectedAccountResponse.getName())))
             .andExpect(jsonPath("$.description", is(expectedAccountResponse.getDescription())));
+    }
+
+    @Test
+    void whenPOSTCreateWithNameNullThendStatusCode400ShouldBeReturned() throws Exception {
+        var accountRequest = AccountRequest.builder()
+            .description("Nubank Account")
+            .build();
+        var requestJson = objectMapper.writeValueAsString(accountRequest);
+
+        mockMvc.perform(post(AccountRoutes.CREATE_URI).contentType(MediaType.APPLICATION_JSON).content(requestJson))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.validationErrors[0].field", is("name")))
+            .andExpect(jsonPath("$.validationErrors[0].error", is("must not be null")));
+
+    }
+
+    @Test
+    void whenPOSTCreateWithNameLengthLowerThan3ThendStatusCode400ShouldBeReturned() throws Exception {
+        var accountRequest = AccountRequest.builder()
+            .name("Nu")
+            .description("Nubank account")
+            .build();
+        var requestJson = objectMapper.writeValueAsString(accountRequest);
+
+        mockMvc.perform(post(AccountRoutes.CREATE_URI).contentType(MediaType.APPLICATION_JSON).content(requestJson))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.validationErrors[0].field", is("name")))
+            .andExpect(jsonPath("$.validationErrors[0].error", is("size must be between 3 and 100")));
+
+    }
+
+    @Test
+    void whenPOSTCreateWithNameLengthGreaterThan100ThendStatusCode400ShouldBeReturned() throws Exception {
+        var accountRequest = AccountRequest.builder()
+            .name("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam imperdiet ac nisl a fermentum viverra.")
+            .description("Nubank account")
+            .build();
+        var requestJson = objectMapper.writeValueAsString(accountRequest);
+
+        mockMvc.perform(post(AccountRoutes.CREATE_URI).contentType(MediaType.APPLICATION_JSON).content(requestJson))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.validationErrors[0].field", is("name")))
+            .andExpect(jsonPath("$.validationErrors[0].error", is("size must be between 3 and 100")));
+
+    }
+
+    @Test
+    void whenPOSTCreateWithDescriptionNullThendStatusCode400ShouldBeReturned() throws Exception {
+        var accountRequest = AccountRequest.builder()
+            .name("Nubank")
+            .build();
+        var requestJson = objectMapper.writeValueAsString(accountRequest);
+
+        mockMvc.perform(post(AccountRoutes.CREATE_URI).contentType(MediaType.APPLICATION_JSON).content(requestJson))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.validationErrors[0].field", is("description")))
+            .andExpect(jsonPath("$.validationErrors[0].error", is("must not be null")));
+    }
+
+    @Test
+    void whenPOSTCreateWithDescriptionLengthLowerThan3ThendStatusCode400ShouldBeReturned() throws Exception {
+        var accountRequest = AccountRequest.builder()
+            .name("Nubank")
+            .description("Nu")
+            .build();
+        var requestJson = objectMapper.writeValueAsString(accountRequest);
+
+        mockMvc.perform(post(AccountRoutes.CREATE_URI).contentType(MediaType.APPLICATION_JSON).content(requestJson))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.validationErrors[0].field", is("description")))
+            .andExpect(jsonPath("$.validationErrors[0].error", is("size must be between 3 and 255")));
+    }
+
+    @Test
+    void whenPOSTCreateWithDescriptionLengthGreaterThan255ThendStatusCode400ShouldBeReturned() throws Exception {
+        var accountRequest = AccountRequest.builder()
+            .name("Nubank")
+            .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ut lobortis leo, a fringilla felis. Cras id nulla sed felis gravida maximus. Morbi mattis est arcu. Cras aliquam sapien at tristique imperdiet. Nulla eu egestas nunc, eget porta metus integer.")
+            .build();
+        var requestJson = objectMapper.writeValueAsString(accountRequest);
+
+        mockMvc.perform(post(AccountRoutes.CREATE_URI).contentType(MediaType.APPLICATION_JSON).content(requestJson))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.validationErrors[0].field", is("description")))
+            .andExpect(jsonPath("$.validationErrors[0].error", is("size must be between 3 and 255")));
     }
 
 }
