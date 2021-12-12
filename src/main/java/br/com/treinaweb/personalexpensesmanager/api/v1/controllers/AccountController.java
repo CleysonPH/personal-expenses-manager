@@ -44,6 +44,12 @@ public interface AccountController {
     })
     ResponseEntity<Void> deleteById(Long accountId);
 
+    @ApiOperation("Atualizar conta por id")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Conta atualizada com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Houveram erros de validação", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+        @ApiResponse(responseCode = "404", description = "Conta não encontrada", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
     AccountResponse updateById(AccountRequest request, Long accountId);
 
 }
