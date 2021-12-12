@@ -54,7 +54,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             .status(status.value())
             .error(status.getReasonPhrase())
             .message("One or more validation errors were detected")
-            .path(((ServletWebRequest)request).getRequest().getRequestURI().toString())
+            .path(((ServletWebRequest)request).getRequest().getRequestURI())
             .timestamp(LocalDateTime.now())
             .validationErrors(validationErrors)
             .build();
